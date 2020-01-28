@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer')
+const z = require('zebras')
 
 const Scraper = require('./Scraper.js')
 
@@ -18,7 +19,7 @@ async function browse() {
     while (true) {
       const count = await page.$$eval('.section-result[data-section-id^="or:"]', elements => elements.length)
 
-      for (let i = 1; i <= 1; i++) {
+      for (let i = 1; i <= count; i++) {
         await page.waitFor(1000)
         await page.click(`.section-result[data-section-id="or:${i}"]`)
         await page.waitForSelector('.section-hero-header-title-title')
@@ -47,6 +48,7 @@ async function browse() {
 
   await browser.close()
   console.log(results)
+  z.toCSV('Businesses.csv', results)
 }
 
 browse()
