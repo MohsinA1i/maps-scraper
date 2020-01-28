@@ -5,11 +5,6 @@ COORDINATES = '42.0493507,-87.6819763'
 
 async function browse() {
   const browser = await puppeteer.launch({headless: false, defaultViewport: null})
-  let dictionary = {
-    'name' : [],
-    'rating' : [],
-    'price' : []
-  }
 
   for (const category of CATEGORIES) {
     const page = await browser.newPage()
