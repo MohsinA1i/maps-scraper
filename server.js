@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer')
 
-const CSVManager = require('./CSVManager.js')
+const Scraper = require('./Scraper.js')
 
 CATEGORIES = ['mediterranean', 'greek', 'middle+eastern']
 COORDINATES = '42.0493507,-87.6819763'
@@ -8,6 +8,7 @@ ZOOM = 14
 
 async function browse() {
   const browser = await puppeteer.launch({headless: false, defaultViewport: null})
+  let results = []
 
   for (const category of CATEGORIES) {
     const page = await browser.newPage()
@@ -17,13 +18,12 @@ async function browse() {
     while (true) {
       const count = await page.$$eval('.section-result[data-section-id^="or:"]', elements => elements.length)
 
-      for (let i = 1; i <= count; i++) {
+      for (let i = 1; i <= 1; i++) {
         await page.waitFor(1000)
         await page.click(`.section-result[data-section-id="or:${i}"]`)
         await page.waitForSelector('.section-hero-header-title-title')
 
-        let result = await ScrapeDetails(page)
-        CSVManager.AddToCSV(result)
+        results.push(await Scraper.ScrapeDetails(page))
 
         await page.waitFor(1000)
         await page.click('.section-back-to-list-button')
@@ -45,47 +45,8 @@ async function browse() {
     await page.close()
   }
 
-  await browser.close()  
-}
-
-async function ScrapeDetails(page){
-  let name = await page.$eval('.section-hero-header-title-title', element => element.textContent)
-
-  let rating = undefined
-  try {  
-    rating = await page.$eval('.section-star-display', element => element.textContent)
-  } catch (error){}
-
-  let price = undefined
-  try {  
-    price = await page.$eval('[aria-label^="Price"]', element => element.textContent.length)
-  } catch (error){}
-
-  let hours = await page.$$eval('.widget-pane-info-open-hours-row-interval', elements => elements.map(element => {
-    let text = element.textContent
-    if (text == 'Closed')
-      return {open : 0000, close : 0000, closed : true}
-    else {
-      let times = element.textContent.split('–')
-      for (let i = 0; i < times.length; i++) {
-        let time = times[i]
-        if (time.endsWith('AM'))
-          times[i] = time.startsWith('12') ? 2400 : parseInt(time.slice(0,-2)) * 100
-        else if (time.endsWith('PM'))
-            times[i] = time.startsWith('12') ? 1200 : parseInt(time.slice(0,-2)) * 100 + 1200
-        else
-          times[i] = i == 0 ? parseInt(time) * 100 : parseInt(time) * 100 + 1200
-      }
-      return {open : times[0], close : times[1], closed : false}
-    }
-  }))
-
-  return {
-    name : name,
-    rating : rating,
-    price : price,
-    hours : hours
-  }
+  await browser.close()
+  console.log(results)
 }
 
 browse()
