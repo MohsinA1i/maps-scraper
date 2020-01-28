@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer')
 
+const CSVManager = require('./CSVManager.js')
+
 CATEGORIES = ['mediterranean', 'greek', 'middle+eastern']
 COORDINATES = '42.0493507,-87.6819763'
 ZOOM = 14
@@ -20,7 +22,8 @@ async function browse() {
         await page.click(`.section-result[data-section-id="or:${i}"]`)
         await page.waitForSelector('.section-hero-header-title-title')
 
-        await ScrapeDetails(page)
+        let result = await ScrapeDetails(page)
+        CSVManager.AddToCSV(result)
 
         await page.waitFor(1000)
         await page.click('.section-back-to-list-button')
@@ -36,14 +39,13 @@ async function browse() {
       
       await page.waitFor(1000)
       await page.click('[aria-label=" Next page "]')
-      console.log(`document.querySelector('[data-section-id^="or:"] [jstcache="124"]').innerText != '${firstName}'`)
       await page.waitForFunction(`document.querySelector('[data-section-id^="or:"] [jstcache="124"]').innerText != '${firstName}'`)
     }
 
     await page.close()
   }
 
-  await browser.close()
+  await browser.close()  
 }
 
 async function ScrapeDetails(page){
