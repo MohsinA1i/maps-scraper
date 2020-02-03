@@ -9,7 +9,6 @@
   "author": "Mohsin Ali",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^2.0.0",
-    "zebras": "0.0.17"
+    "puppeteer": "^2.0.0"
   }
 }
