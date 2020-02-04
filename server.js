@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer')
 
 const Scraper = require('./Scraper.js')
-const DFGenerator = require('./DataFrameGenerator.js')
+const DFGenerator = require('./CSV.js')
 
-CATEGORIES = ['greek']
+CATEGORIES = ['mediterranean', 'greek', 'middle+eastern']
 COORDINATES = '42.0493507,-87.6819763'
-ZOOM = 12
+ZOOM = 13
 
 async function browse() {
   const browser = await puppeteer.launch({headless: false, defaultViewport: null})
@@ -19,10 +19,9 @@ async function browse() {
     while (true) {
       const count = await page.$$eval('.section-result[data-section-id^="or:"]', elements => elements.length)
 
-      for (let i = 1; i <= 1; i++) {
+      for (let i = 1; i <= count; i++) {
         await page.waitFor(1000)
         await page.click(`.section-result[data-section-id="or:${i}"]`)
-        console.log('Waiting for details ...')
         await page.waitForSelector('.section-hero-header-title-title')
 
         results.push(await Scraper.ScrapeDetails(page))

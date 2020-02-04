@@ -9,6 +9,7 @@
   "author": "Mohsin Ali",
   "license": "ISC",
   "dependencies": {
+    "json2csv": "^4.5.4",
     "puppeteer": "^2.0.0"
   }
 }

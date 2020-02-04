@@ -1,4 +1,5 @@
-const fs = require('fs');
+const { Parser } = require('json2csv')
+const fs = require('fs')
 
 exports.ToCSV = function (results) {
     let dataFrame = []
@@ -6,7 +7,7 @@ exports.ToCSV = function (results) {
     var ToMilitaryTime = function (label) {
         if (label == undefined) return undefined
         else if (label.endsWith('AM'))
-          return label.startsWith('12') ? 2400 : parseInt(label.slice(0,-2)) * 100
+          return label.startsWith('12') ? 0000 : parseInt(label.slice(0,-2)) * 100
         else if (label.endsWith('PM'))
             return label.startsWith('12') ? 1200 : parseInt(label.slice(0,-2)) * 100 + 1200
     }
@@ -28,5 +29,8 @@ exports.ToCSV = function (results) {
         }
         dataFrame.push(row)
     }
-    fs.writeFile('DataFrame.json', JSON.stringify(dataFrame), function (err) {if (err) throw err})
+
+    const parser = new Parser()
+    const csv = parser.parse(dataFrame)
+    fs.writeFile('DataFrame.csv', csv, function (err) {if (err) throw err})
 }

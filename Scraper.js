@@ -20,7 +20,11 @@ exports.ScrapeDetails = async function(page) {
       let result = {day: day}
       if (interval == 'Closed')
         result.closed = true
-      else {
+      else if (interval == 'Open 24 hours') {
+        result.open = true
+        result.open = '12AM'
+        result.close = '12AM'
+      } else {
         let hours = interval.split('–')
         let openingHour = hours[0]
         if (!(openingHour.endsWith('PM') || openingHour.endsWith('AM'))) 
