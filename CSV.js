@@ -1,7 +1,7 @@
 const { Parser } = require('json2csv')
 const fs = require('fs')
 
-exports.ToCSV = function (results) {
+exports.Save = function (results) {
     let dataFrame = []
 
     var ToMilitaryTime = function (label) {

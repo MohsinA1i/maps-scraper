@@ -1,14 +1,14 @@
-const puppeteer = require('puppeteer')
+const Puppeteer = require('puppeteer')
 
 const Scraper = require('./Scraper.js')
-const DFGenerator = require('./CSV.js')
+const Csv = require('./CSV.js')
 
 CATEGORIES = ['mediterranean', 'greek', 'middle+eastern']
 COORDINATES = '42.0493507,-87.6819763'
 ZOOM = 13
 
 async function browse() {
-  const browser = await puppeteer.launch({headless: false, defaultViewport: null})
+  const browser = await Puppeteer.launch({headless: false, defaultViewport: null})
   let results = []
 
   for (const category of CATEGORIES) {
@@ -49,7 +49,7 @@ async function browse() {
   }
 
   await browser.close()
-  DFGenerator.ToCSV(results)
+  Csv.Save(results)
 }
 
 browse()
