@@ -12,6 +12,21 @@ exports.ScrapeDetails = async function(page) {
     price = await page.$eval('[aria-label^="Price"]', element => element.textContent.length)
   } catch (error){}
 
+  let address = await page.$eval('[aria-label="Address"]', element => {
+    if (!element) return
+    return element.parentElement.querySelector('.section-info-text').textContent
+  })
+
+  let pluscode = await page.$eval('.maps-sprite-pane-info-plus-code', element => { 
+    if (!element) return
+    return element.parentElement.parentElement.querySelector('.section-info-text').textContent
+  })
+  
+  let phone = await page.$eval('[aria-label="Phone"]',  element => {
+    if (!element) return
+    return element.parentElement.querySelector('.section-info-text').textContent
+  })
+
   let openHours = await page.$$eval('.widget-pane-info-open-hours-row-row', elements =>
     elements.map(element => {
       let day = element.querySelector('.widget-pane-info-open-hours-row-header').textContent.toLowerCase().trim()
@@ -67,6 +82,9 @@ exports.ScrapeDetails = async function(page) {
     name : name,
     rating : rating,
     price : price,
+    address : address,
+    pluscode : pluscode,
+    phone : phone,
     openHours : openHours,
     popularity: popularity
   }

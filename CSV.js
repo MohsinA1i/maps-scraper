@@ -15,8 +15,11 @@ exports.Save = function (results) {
     for (result of results) {
         let row = {
             name : result.name,
-            rating : result.rating,
-            price : result.price
+            rating : result.rating, 
+            price : result.price,
+            address : result.address,
+            pluscode : result.pluscode,
+            phone : result.phone
         }
         for (openHour of result.openHours) {
             row[openHour.day + '_closed'] = openHour.closed
@@ -32,5 +35,5 @@ exports.Save = function (results) {
 
     const parser = new Parser()
     const csv = parser.parse(dataFrame)
-    fs.writeFile('DataFrame.csv', csv, function (err) {if (err) throw err})
+    fs.writeFile('Businesses.csv', csv, function (err) {if (err) throw err})
 }
