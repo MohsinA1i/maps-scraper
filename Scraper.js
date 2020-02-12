@@ -21,6 +21,11 @@ exports.ScrapeDetails = async function(page) {
     if (!element) return
     return element.parentElement.parentElement.querySelector('.section-info-text').textContent
   })
+
+  let website = await page.$eval('[aria-label="Website"]', element => {
+    if (!element) return
+    return element.parentElement.querySelector('.section-info-text').textContent
+  })  
   
   let phone = await page.$eval('[aria-label="Phone"]',  element => {
     if (!element) return
@@ -30,6 +35,7 @@ exports.ScrapeDetails = async function(page) {
   let openHours = await page.$$eval('.widget-pane-info-open-hours-row-row', elements =>
     elements.map(element => {
       let day = element.querySelector('.widget-pane-info-open-hours-row-header').textContent.toLowerCase().trim()
+      day = day.replace(/ .*/, '')
       let interval = element.querySelector('.widget-pane-info-open-hours-row-interval').textContent
    
       let result = {day: day}
@@ -84,6 +90,7 @@ exports.ScrapeDetails = async function(page) {
     price : price,
     address : address,
     pluscode : pluscode,
+    website : website,
     phone : phone,
     openHours : openHours,
     popularity: popularity
