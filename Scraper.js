@@ -1,10 +1,15 @@
-exports.ScrapeDetails = async function(page) {
+exports.ScrapePlace = async function(page) {
   let name = await page.$eval('.section-hero-header-title-title', element => element.textContent)
   console.log(name)
 
   let rating = undefined
   try {  
     rating = await page.$eval('.section-star-display', element => element.textContent)
+  } catch (error){}
+
+  let reviewCount = undefined
+  try {
+    reviewCount = await page.$eval('[jsaction="pane.rating.moreReviews"]', element => element.textContent.replace(/[(),]/g, ''))
   } catch (error){}
 
   let price = undefined
@@ -34,8 +39,8 @@ exports.ScrapeDetails = async function(page) {
 
   let openHours = await page.$$eval('.widget-pane-info-open-hours-row-row', elements =>
     elements.map(element => {
-      let day = element.querySelector('.widget-pane-info-open-hours-row-header').textContent.toLowerCase().trim()
-      day = day.replace(/ .*/, '')
+      
+      let day = element.querySelector('.widget-pane-info-open-hours-row-header').textContent.toLowerCase().trim().replace(/ .*/, '')
       let interval = element.querySelector('.widget-pane-info-open-hours-row-interval').textContent
    
       let result = {day: day}
@@ -48,11 +53,13 @@ exports.ScrapeDetails = async function(page) {
       } else {
         let hours = interval.split('–')
         let openingHour = hours[0]
-        if (!(openingHour.endsWith('PM') || openingHour.endsWith('AM'))) 
+        if (!(openingHour.endsWith('PM') || openingHour.endsWith('AM'))) {
           openingHour = openingHour + 'AM'
+        }
         let closingHour = hours[1]
-        if (!(closingHour.endsWith('PM') || closingHour.endsWith('AM'))) 
+        if (!(closingHour.endsWith('PM') || closingHour.endsWith('AM'))) {
           closingHour = closingHour + 'PM'
+        }
 
         result.open = openingHour  
         result.close = closingHour
@@ -87,11 +94,12 @@ exports.ScrapeDetails = async function(page) {
   return {
     name : name,
     rating : rating,
+    reviewCount : reviewCount,
     price : price,
+    phone : phone,
     address : address,
     pluscode : pluscode,
     website : website,
-    phone : phone,
     openHours : openHours,
     popularity: popularity
   }

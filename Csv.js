@@ -4,33 +4,29 @@ const fs = require('fs')
 exports.Save = function (results) {
     let dataFrame = []
 
-    var ToMilitaryTime = function (label) {
+    let ToMilitaryTime = function (label) {
         if (label == undefined) return undefined
         else if (label.endsWith('AM'))
-          return label.startsWith('12') ? 0000 : parseInt(label.slice(0,-2)) * 100
+          return label.startsWith('12') ? '0000' : parseInt(label.slice(0,-2)) * 100
         else if (label.endsWith('PM'))
             return label.startsWith('12') ? 1200 : parseInt(label.slice(0,-2)) * 100 + 1200
     }
 
     for (result of results) {
-        let row = {
-            name : result.name,
-            rating : result.rating, 
-            price : result.price,
-            address : result.address,
-            pluscode : result.pluscode,
-            phone : result.phone
-        }
         for (openHour of result.openHours) {
-            row[openHour.day + '_closed'] = openHour.closed
-            row[openHour.day + '_open'] = ToMilitaryTime(openHour.open)
-            row[openHour.day + '_close'] = ToMilitaryTime(openHour.close)
+            result[openHour.day + '_closed'] = openHour.closed
+            result[openHour.day + '_open'] = ToMilitaryTime(openHour.open)
+            result[openHour.day + '_close'] = ToMilitaryTime(openHour.close)
         }
+        delete result.openHours
+
         for (popularity of result.popularity) {
             const time = ToMilitaryTime(popularity.hour)
-            row[popularity.day + '_' + time] = popularity.popularity
+            result[popularity.day + '_' + time] = popularity.popularity
         }
-        dataFrame.push(row)
+        delete result.popularity
+
+        dataFrame.push(result)
     }
 
     const parser = new Parser()
