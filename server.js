@@ -4,8 +4,8 @@ const Scraper = require('./Scraper.js')
 const Csv = require('./Csv.js')
 
 CATEGORIES = ['greek', 'mediterranean', 'middle+eastern']
-LATITUDE = 42.0493507
-LONGITUDE = -87.6819763
+LATITUDE = 41.910377 //LINCOLN PARK
+LONGITUDE = -87.653410
 ZOOM = 13
 
 async function browse() {
